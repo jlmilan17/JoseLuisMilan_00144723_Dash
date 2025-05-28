@@ -1,0 +1,75 @@
+table Dim_Calendario
+	lineageTag: 583b1dc7-f2c9-4ee3-bc5b-92aa78744a53
+
+	column Fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2df4677b-201a-4678-bf32-8d11c300714b
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		variation Variación
+			isDefault
+			relationship: d57a291e-350f-48d2-b2bf-634f9662bfb5
+			defaultHierarchy: LocalDateTable_0c7e04b2-cc22-438f-a907-a40852b97ffe.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Año
+		dataType: int64
+		formatString: 0
+		lineageTag: 039379a7-9255-4f45-9a27-d50a9450b7cd
+		summarizeBy: sum
+		sourceColumn: Año
+
+		annotation SummarizationSetBy = Automatic
+
+	column Semana
+		dataType: int64
+		formatString: 0
+		lineageTag: 6b7a4b88-40a6-4e54-8a04-2aecba15d22f
+		summarizeBy: sum
+		sourceColumn: Semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		dataType: string
+		lineageTag: 5d3f6b48-27bc-4bee-80b0-1d3536b6d520
+		summarizeBy: none
+		sourceColumn: Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Numero Mes'
+		dataType: int64
+		formatString: 0
+		lineageTag: 39f0f1b3-b454-4353-b4a8-df84e72e7eec
+		summarizeBy: sum
+		sourceColumn: Numero Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column datekey
+		dataType: int64
+		formatString: 0
+		lineageTag: ee788f5d-2a57-4eff-8138-b6a8a95719b4
+		summarizeBy: none
+		sourceColumn: datekey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Calendario = m
+		mode: import
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\jluis\Downloads\VentasVehiculos.xlsx"), null, true),
+				    Dim_Calendario_Table = Origen{[Item="Dim_Calendario",Kind="Table"]}[Data],
+				    #"Tipo cambiado" = Table.TransformColumnTypes(Dim_Calendario_Table,{{"Fecha", type date}, {"Año", Int64.Type}, {"Semana", Int64.Type}, {"Mes", type text}, {"Numero Mes", Int64.Type}, {"datekey", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+
